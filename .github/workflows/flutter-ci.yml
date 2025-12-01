@@ -24,5 +24,11 @@ jobs:
       - name: Run Analyzer
         run: flutter analyze
 
-      - name: Run Tests
-        run: flutter test
+      - name: Run Tests with Coverage
+        run: flutter test --coverage
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
