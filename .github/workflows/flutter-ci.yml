@@ -27,18 +27,30 @@ jobs:
 
       - name: Run Tests with Coverage
         run: flutter test --coverage
- 
+
+      - name: Install lcov
+        run: sudo apt-get update && sudo apt-get install -y lcov
+  
       - name: Check Coverage Threshold
         run: |
-          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep lines | awk '{print $2}' | sed 's/%//')
-          echo "Current coverage: $COVERAGE%"
+          sudo apt-get install -y lcov
+          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep 'lines' | awk '{print $2}' | sed 's/%//')
+          
+          echo "Extracted coverage: $COVERAGE"
           MIN_COVERAGE=60
 
-          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
-            echo "Coverage ($COVERAGE%) is below minimum threshold ($MIN_COVERAGE%)"
+          if [ -z "$COVERAGE" ]; then
+            echo "No coverage data found. Coverage is 0%."
+            exit 1
+          fi
+
+          COVERAGE_VAL=$(printf "%.0f" "$COVERAGE")
+
+          if [ "$COVERAGE_VAL" -lt "$MIN_COVERAGE" ]; then
+            echo "Coverage ($COVERAGE_VAL%) is below threshold ($MIN_COVERAGE%)"
             exit 1
           else
-            echo "Coverage check passed!"
+            echo "Coverage check passed! ($COVERAGE_VAL%)"
           fi
 
       - name: Upload Coverage Report
