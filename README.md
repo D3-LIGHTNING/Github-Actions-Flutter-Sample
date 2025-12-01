@@ -29,7 +29,7 @@ The workflow configuration can be found in `.github/workflows/flutter.yaml`.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/github_actions_flutter_sample.git
+    git clone https://github.com/D3-LIGHTNING/Github-Actions-Flutter-Sample.git
     cd github_actions_flutter_sample
     ```
 2.  **Install Flutter dependencies:**
