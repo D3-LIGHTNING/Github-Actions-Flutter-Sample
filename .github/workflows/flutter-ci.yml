@@ -26,9 +26,23 @@ jobs:
 
       - name: Run Tests with Coverage
         run: flutter test --coverage
+ 
+      - name: Check Coverage Threshold
+        run: |
+          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep lines | awk '{print $2}' | sed 's/%//')
+          echo "Current coverage: $COVERAGE%"
+          MIN_COVERAGE=60
+
+          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
+            echo "Coverage ($COVERAGE%) is below minimum threshold ($MIN_COVERAGE%)"
+            exit 1
+          else
+            echo "Coverage check passed!"
+          fi
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage/lcov.info
+          path: coverage/lcov.info    
+    
